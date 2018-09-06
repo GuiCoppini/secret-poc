@@ -1,12 +1,12 @@
-package game.client;
+package client;
 
 import java.net.Socket;
 import java.util.Scanner;
 
-import game.game.Player;
-import game.game.Table;
-import game.system.Connection;
-import game.system.Message;
+import gamecore.Player;
+import gamecore.Table;
+import system.Connection;
+import system.Message;
 import static java.lang.System.in;
 
 public class Client {

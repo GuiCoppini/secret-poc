@@ -1,10 +1,10 @@
-package game.server;
+package server;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import game.game.Room;
-import game.system.Message;
+import gamecore.Room;
+import system.Message;
 
 public class MainThread {
     private static Server server;

@@ -1,4 +1,4 @@
-package game.game;
+package gamecore;
 
 public class Player {
     private static Integer GLOBAL_ID = 0;

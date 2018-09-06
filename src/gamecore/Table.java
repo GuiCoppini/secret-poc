@@ -1,4 +1,4 @@
-package game.game;
+package gamecore;
 
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;

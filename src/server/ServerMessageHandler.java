@@ -1,7 +1,7 @@
-package game.server;
+package server;
 
-import game.game.Player;
-import game.system.Message;
+import gamecore.Player;
+import system.Message;
 
 public class ServerMessageHandler {
 

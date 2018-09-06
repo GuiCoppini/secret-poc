@@ -1,7 +1,6 @@
-package game.server;
+package server;
 
-import game.game.Player;
-import game.system.Connection;
+import system.Connection;
 
 import java.net.Socket;
 

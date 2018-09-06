@@ -1,9 +1,9 @@
-package game.client;
+package client;
 
 import java.io.Serializable;
 
-import game.game.Table;
-import game.system.Message;
+import gamecore.Table;
+import system.Message;
 
 public class ClientMessageHandler {
 
