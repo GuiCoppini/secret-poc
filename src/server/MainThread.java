@@ -3,6 +3,7 @@ package server;
 import java.util.HashMap;
 import java.util.Map;
 
+import gamecore.Player;
 import gamecore.Room;
 import system.Message;
 
@@ -11,7 +12,7 @@ public class MainThread {
     protected static Room room = new Room();
 
     // map de players por ID
-    protected static Map<Integer, ClientConnection> players = new HashMap<>();
+    protected static Map<Player, ClientConnection> players = new HashMap<>();
 
     public static void main(String[] args) {
         runServerSocket();
@@ -22,16 +23,14 @@ public class MainThread {
 
         Thread thread = new Thread(server);
         thread.start();
-
-        Message playMessage = new Message("play");
     }
 
     public static void broadcastToClients(Message message) {
 
-        for(Integer id : players.keySet()) {
-            System.out.println("Sending message to player of ID=" + id);
+        for(Player player : players.keySet()) {
+            System.out.println("Sending message to player of ID=" + player.getId());
 
-            players.get(id).getConnection().sendMessage(message);
+            players.get(player).getConnection().sendMessage(message);
         }
     }
 }

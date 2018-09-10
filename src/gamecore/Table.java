@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Table implements Serializable {
 
-    private AtomicInteger[][] table = new AtomicInteger[5][5];
+    private AtomicInteger[][] table = new AtomicInteger[7][7];
 
     public Table() {
         for (int i = 0; i<table.length; i++) {
@@ -14,8 +14,15 @@ public class Table implements Serializable {
         }
     }
 
-    public AtomicInteger[][] increment(int x, int y) {
-        table[x-1][y-1].incrementAndGet();
+    public AtomicInteger[][] add(int column, int player) { //player pra mostrar quem jogou
+        if(player == 0) throw new RuntimeException("Player nao pode ser 0");
+
+        for(int line = table.length-1; line >= 0; line--) {
+            if(table[line][column].get() == 0) { // linha livre
+                table[line][column] = new AtomicInteger(player);
+                break;
+            }
+        }
         return table;
     }
 

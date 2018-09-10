@@ -27,11 +27,12 @@ public class ClientMessageHandler {
                 Client.localTable = (Table) message.getArguments().get(0);
                 break;
 
-            case ("inc"):
-                int incX = (int) message.getArguments().get(0);
-                int incY = (int) message.getArguments().get(1);
-                System.out.println("Incrementando table local em x="+incX+" y="+incY);
-                Client.localTable.increment(incX, incY);
+            case ("update"):
+                int column = (int) message.getArguments().get(0);
+                int playerId = (int) message.getArguments().get(1);
+
+                System.out.println("Recebeu msg na coluna " + column);
+                Client.localTable.add(column, playerId);
 
                 for (int i = 0; i < Client.localTable.getTable().length; i++) {
                     for (int j = 0; j < Client.localTable.getTable()[i].length; j++) {

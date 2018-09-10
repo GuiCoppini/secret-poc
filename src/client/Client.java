@@ -45,10 +45,9 @@ public class Client {
 
     public static void play() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Insira um x e um y:");
-        int x = sc.nextInt();
-        int y = sc.nextInt();
+        System.out.println("Insira uma coluna");
+        int column = sc.nextInt();
 
-        Client.connection.sendMessage(new Message("coordinates", x, y));
+        Client.connection.sendMessage(new Message("add", column));
     }
 }
