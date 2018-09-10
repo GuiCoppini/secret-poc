@@ -22,12 +22,12 @@ public class MainThread {
         }
 
         System.out.println("passou");
-        sleep(1000);
+        sleep(2000);
 
-        waitForPlay(room.getActualPlayer());
+        sendPlay(room.getActualPlayer());
     }
 
-    public static void waitForPlay(Player actualPlayer) {
+    public static void sendPlay(Player actualPlayer) {
         ClientConnection playerConnection = players.get(actualPlayer);
         Message playMessage = new Message("play");
 
@@ -61,7 +61,7 @@ public class MainThread {
 
     private static void sleep(int millis) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(millis);
         } catch(InterruptedException e) {
             e.printStackTrace();
         }

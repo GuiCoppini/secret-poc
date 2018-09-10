@@ -3,7 +3,6 @@ package server;
 import java.util.Map;
 
 import gamecore.Player;
-import sun.applet.Main;
 import system.Message;
 
 public class ServerMessageHandler {
@@ -36,7 +35,7 @@ public class ServerMessageHandler {
 
                 MainThread.broadcastToClients(new Message("update", column, player.getId()));
 
-                MainThread.waitForPlay(MainThread.room.getActualPlayer());
+                MainThread.sendPlay(MainThread.room.getActualPlayer());
 
                 break;
             case ("login"):
