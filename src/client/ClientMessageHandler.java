@@ -11,6 +11,9 @@ public class ClientMessageHandler {
     static void handleMessage(Message message) {
 
         switch(message.getCommand()) {
+            case ("you"):
+                Client.setId((int) message.getArguments().get(0));
+                break;
             case ("print"):
                 System.out.println();
                 for(Serializable arg : message.getArguments()) {
@@ -39,6 +42,16 @@ public class ClientMessageHandler {
                         System.out.print(Client.localTable.getTable()[i][j] + " ");
                     }
                     System.out.println();
+                }
+                break;
+
+            case ("winner"):
+                int winnerId = (int) message.getArguments().get(0);
+
+                if(Client.getId() == winnerId) {
+                    System.out.println("YOU WON!");
+                } else {
+                    System.out.println("YOU LOST!");
                 }
         }
     }

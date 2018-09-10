@@ -10,7 +10,7 @@ import system.Message;
 import static java.lang.System.in;
 
 public class Client {
-    static Player player;
+    static int id;
     static Scanner scanner = new Scanner(in);
     static Connection connection;
     static Table localTable = new Table();
@@ -45,5 +45,13 @@ public class Client {
         int column = sc.nextInt();
 
         Client.connection.sendMessage(new Message("add", column-1));
+    }
+
+    public static int getId() {
+        return id;
+    }
+
+    public static void setId(int id) {
+        Client.id = id;
     }
 }

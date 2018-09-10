@@ -2,12 +2,16 @@ package server;
 
 import java.util.Map;
 
+import client.Client;
 import gamecore.Player;
+import gamecore.Room;
+import sun.applet.Main;
 import system.Message;
 
 public class ServerMessageHandler {
 
     static void handleIncomingMessage(Message message, ClientConnection c) {
+        Room room = MainThread.room;
         switch(message.getCommand()) {
             case ("add"):
 
@@ -18,10 +22,10 @@ public class ServerMessageHandler {
                     }
                 }
 
-                System.out.println("Actual: " + MainThread.room.getActualPlayer().getId());
+                System.out.println("Actual: " + room.getActualPlayer().getId());
                 System.out.println("Who played: " + player.getId());
 
-                if(MainThread.room.getActualPlayer().getId() != player.getId()) {
+                if(room.getActualPlayer().getId() != player.getId()) {
                     System.out.println("WRONG TURN PLAY");
                     return;
                 }
@@ -29,23 +33,32 @@ public class ServerMessageHandler {
                 int column = (int) message.getArguments().get(0);
                 System.out.println("(" + player.getName() + ")" +  " Column = " + column);
                 System.out.println("By player " + player.getName());
-                MainThread.room.getTable().add(column, player.getId());
+                room.getTable().add(column, player.getId());
 
-                MainThread.room.changePlayer(); // troca vez
+                room.changePlayer(); // troca vez
 
                 MainThread.broadcastToClients(new Message("update", column, player.getId()));
 
-                MainThread.sendPlay(MainThread.room.getActualPlayer());
+                int winnerId = room.verificaVencedor(room.getPlayers()[0].getId(), room.getPlayers()[1].getId());
+                System.out.println("WINNER ID = " + winnerId);
+                if(winnerId != 0) {
+                    Message winnerMessage = new Message("winner", winnerId);
+                    MainThread.broadcastToClients(winnerMessage);
+                } else {
+                    MainThread.sendPlay(room.getActualPlayer());
+                }
 
                 break;
             case ("login"):
                 String nickname = (String) message.getArguments().get(0);
                 Player joined = new Player(nickname);
                 MainThread.players.put(joined, c);
-                MainThread.room.addPlayer(joined);
+                room.addPlayer(joined);
 
                 MainThread.broadcastToClients(new Message("print","Player " + nickname + " joined."));
-                c.getConnection().sendMessage(new Message("table",MainThread.room.getTable()));
+
+                c.getConnection().sendMessage(new Message("you", joined.getId()));
+                c.getConnection().sendMessage(new Message("table", room.getTable()));
         }
     }
 }
