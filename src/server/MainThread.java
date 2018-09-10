@@ -16,6 +16,31 @@ public class MainThread {
 
     public static void main(String[] args) {
         runServerSocket();
+
+        while(checkLength(room.getPlayers()) < 2) {
+            // faz nada
+        }
+
+        System.out.println("passou");
+        sleep(1000);
+
+        waitForPlay(room.getActualPlayer());
+    }
+
+    public static void waitForPlay(Player actualPlayer) {
+        ClientConnection playerConnection = players.get(actualPlayer);
+        Message playMessage = new Message("play");
+
+        playerConnection.getConnection().sendMessage(playMessage);
+    }
+
+    private static int checkLength(Player[] array) {
+        int length = 0;
+
+        for(int i = 0; i<array.length; i++) {
+            if(array[i] != null) length++;
+        }
+        return length;
     }
 
     private static void runServerSocket() {
@@ -31,6 +56,14 @@ public class MainThread {
             System.out.println("Sending message to player of ID=" + player.getId());
 
             players.get(player).getConnection().sendMessage(message);
+        }
+    }
+
+    private static void sleep(int millis) {
+        try {
+            Thread.sleep(1000);
+        } catch(InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

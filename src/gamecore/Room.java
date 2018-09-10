@@ -4,12 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
+    public static final int PLAYERS_SIZE = 2;
     private Table table = new Table();
-    private List<Player> players = new ArrayList<>();
-    private Player actualPlayer;
+    private Player[] players = new Player[PLAYERS_SIZE];
+    private Player winner; // vai ser settado quando alguem ganhar
 
-    public List<Player> getPlayers() {
-        return new ArrayList<>(players);
+    private int actualPlayerPosition = 0; // posicao do player atual no array
+
+    public void changePlayer() {
+        if(actualPlayerPosition == 0) actualPlayerPosition = 1;
+        else actualPlayerPosition = 0;
+
+        System.out.println("Player position is now " + actualPlayerPosition);
+    }
+
+    public Player[] getPlayers() {
+        Player[] response = new Player[PLAYERS_SIZE];
+
+        // faz copia pra evitar q alguem edite
+        for(int i = 0; i<PLAYERS_SIZE; i++)
+            response[i] = players[i];
+
+        return response;
     }
 
     public Table getTable() {
@@ -17,17 +33,24 @@ public class Room {
     }
 
     public void addPlayer(Player joined) {
-        players.add(joined);
-        if(actualPlayer == null) actualPlayer = joined;
-
+        for(int i = 0; i < players.length; i++) {
+            if(players[i] == null) {
+                players[i] = joined;
+                return;
+            }
+        }
     }
 
     public Player getActualPlayer() {
-        return actualPlayer;
+        return players[actualPlayerPosition];
     }
 
-    public void setActualPlayer(Player actualPlayer) {
-        this.actualPlayer = actualPlayer;
+    public Player getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Player winner) {
+        this.winner = winner;
     }
 }
 

@@ -37,10 +37,6 @@ public class Client {
                 ClientMessageHandler.handleMessage(connection.readMessage());
         }).start();
 
-        play();
-        play();
-        play();
-        play();
     }
 
     public static void play() {
@@ -48,6 +44,6 @@ public class Client {
         System.out.println("Insira uma coluna");
         int column = sc.nextInt();
 
-        Client.connection.sendMessage(new Message("add", column));
+        Client.connection.sendMessage(new Message("add", column-1));
     }
 }
