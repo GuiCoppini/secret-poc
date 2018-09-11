@@ -37,6 +37,11 @@ public class Client {
                 ClientMessageHandler.handleMessage(connection.readMessage());
         }).start();
 
+        KeepAliveSender sender = new KeepAliveSender();
+
+        Thread thread = new Thread(sender);
+        thread.start();
+
     }
 
     public static void play() {

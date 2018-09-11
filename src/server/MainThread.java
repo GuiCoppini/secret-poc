@@ -9,6 +9,7 @@ import system.Message;
 
 public class MainThread {
     private static Server server;
+    private static KeepAliveListener listener;
     protected static Room room = new Room();
 
     // map de players por ID
@@ -16,6 +17,7 @@ public class MainThread {
 
     public static void main(String[] args) {
         runServerSocket();
+        runKeepAliveSocket();
 
         while(checkLength(room.getPlayers()) < 2) {
             // faz nada
@@ -47,6 +49,13 @@ public class MainThread {
         server = new Server();
 
         Thread thread = new Thread(server);
+        thread.start();
+    }
+
+    private static void runKeepAliveSocket() {
+        listener = new KeepAliveListener();
+
+        Thread thread = new Thread(listener);
         thread.start();
     }
 
