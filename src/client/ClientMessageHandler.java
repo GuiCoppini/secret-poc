@@ -2,6 +2,7 @@ package client;
 
 import java.io.Serializable;
 
+import client.GUI.TestTable;
 import gamecore.Table;
 import system.Message;
 
@@ -43,6 +44,8 @@ public class ClientMessageHandler {
                     }
                     System.out.println();
                 }
+
+                Client.table = new TestTable(Client.localTable.getTable());
                 break;
 
             case ("winner"):

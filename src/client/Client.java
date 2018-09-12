@@ -5,6 +5,8 @@ import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
+import client.GUI.GUI2;
+import client.GUI.TestTable;
 import gamecore.Player;
 import gamecore.Table;
 import system.Connection;
@@ -16,6 +18,8 @@ public class Client {
     static Scanner scanner = new Scanner(in);
     static Connection connection;
     static Table localTable = new Table();
+
+    static TestTable table = new TestTable(localTable.getTable());
 
     private static void connect(String ip, int port) {
         try {

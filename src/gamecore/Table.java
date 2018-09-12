@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Table implements Serializable {
 
-    private int[][] table = new int[7][7];
+    private Integer[][] table = new Integer[7][7];
 
     public Table() {
         for (int i = 0; i<table.length; i++) {
@@ -13,7 +13,7 @@ public class Table implements Serializable {
         }
     }
 
-    public int[][] add(int column, int player) { //player pra mostrar quem jogou
+    public Integer[][] add(int column, int player) { //player pra mostrar quem jogou
         if(player == 0) throw new RuntimeException("Player nao pode ser 0");
 
         for(int line = table.length-1; line >= 0; line--) {
@@ -25,7 +25,7 @@ public class Table implements Serializable {
         return table;
     }
 
-    public int[][] getTable() {
+    public Integer[][] getTable() {
         return table;
     }
 }
