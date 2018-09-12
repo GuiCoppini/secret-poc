@@ -32,16 +32,20 @@ public class Client {
 
         connection.sendMessage(new Message("login", name));
 
-        new Thread(() -> {
-            while(true)
-                ClientMessageHandler.handleMessage(connection.readMessage());
-        }).start();
+        startHandler();
 
         KeepAliveSender sender = new KeepAliveSender();
 
         Thread thread = new Thread(sender);
         thread.start();
 
+    }
+
+    private static void startHandler() {
+        new Thread(() -> {
+            while(true)
+                ClientMessageHandler.handleMessage(connection.readMessage());
+        }).start();
     }
 
     public static void play() {
