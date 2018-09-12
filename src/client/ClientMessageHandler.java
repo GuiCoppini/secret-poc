@@ -1,5 +1,6 @@
 package client;
 
+import java.awt.Color;
 import java.io.Serializable;
 
 import client.GUI.TestTable;
@@ -45,7 +46,6 @@ public class ClientMessageHandler {
                     System.out.println();
                 }
 
-                Client.table = new TestTable(Client.localTable.getTable());
                 break;
 
             case ("winner"):

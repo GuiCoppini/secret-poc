@@ -342,6 +342,6 @@ public class ConnectFour {
         }
 
         // show the GUI and start the game
-        GUI2.showGUI(board, HUMAN, 6);
+        ConnectFourGUI.showGUI(board, HUMAN, 6);
     }
 }

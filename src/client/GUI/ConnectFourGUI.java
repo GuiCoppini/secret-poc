@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
-public class GUI2 {
+public class ConnectFourGUI {
 
     public static final int ROWS = ConnectFour.ROWS;
     public static final int COLUMNS = ConnectFour.COLUMNS;
@@ -32,12 +32,9 @@ public class GUI2 {
      */
     public static void showGUI(final Color[][] board, final Color firstPlayer, final int depth) {
         // For thread safety, invoke GUI code on event-dispatching thread
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                GUI2 gui = new GUI2(board, firstPlayer, depth);
-                gui.startGame();
-            }
+        SwingUtilities.invokeLater(() -> {
+            ConnectFourGUI gui = new ConnectFourGUI(board, firstPlayer, depth);
+            gui.startGame();
         });
     }
 
@@ -228,7 +225,7 @@ public class GUI2 {
     /**
      * Constructor for the GUI.
      */
-    private GUI2(Color[][] board, Color player, int depth) {
+    private ConnectFourGUI(Color[][] board, Color player, int depth) {
         this.board = board;
         this.currentPlayer = player;
         this.depth = depth;
