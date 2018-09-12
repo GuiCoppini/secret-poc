@@ -3,6 +3,8 @@ package client;
 import java.net.Socket;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 import gamecore.Player;
 import gamecore.Table;
 import system.Connection;
@@ -24,10 +26,17 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        System.out.println("Insira seu nick");
-        String name = scanner.nextLine();
+        String name = (String) JOptionPane.showInputDialog(
+                "Insira seu nickname:", "player");
 
-        connect("localhost", 5555);
+        String serverIP = (String) JOptionPane.showInputDialog(
+                "Insira o IP do servidor", "localhost");
+
+        String serverPort = (String) JOptionPane.showInputDialog(
+                "Insira a porta do servidor", "5555");
+
+
+        connect(serverIP, Integer.valueOf(serverPort));
         System.out.println("Connected to server");
 
         connection.sendMessage(new Message("login", name));
