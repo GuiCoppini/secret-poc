@@ -1,9 +1,7 @@
 package client;
 
-import java.awt.Color;
 import java.io.Serializable;
 
-import client.GUI.TestTable;
 import gamecore.Table;
 import system.Message;
 

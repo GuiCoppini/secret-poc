@@ -1,4 +1,4 @@
-package client.GUI;
+package client.gui;
 
 import java.awt.Color;
 
@@ -330,7 +330,7 @@ public class ConnectFour {
         board[row][column] = NONE;
     }
 
-    /** Creates board array and starts game GUI. */
+    /** Creates board array and starts game gui. */
     public static void main(String[] args) {
         // create array for game board
         Color[][] board = new Color[ROWS][COLUMNS];
@@ -341,7 +341,7 @@ public class ConnectFour {
             }
         }
 
-        // show the GUI and start the game
+        // show the gui and start the game
         ConnectFourGUI.showGUI(board, HUMAN, 6);
     }
 }

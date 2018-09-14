@@ -5,9 +5,7 @@ import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
-import client.GUI.TestTable;
 import gamecore.Table;
-import javafx.scene.paint.Color;
 import system.Connection;
 import system.Message;
 import static java.lang.System.in;

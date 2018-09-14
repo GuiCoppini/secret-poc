@@ -1,4 +1,4 @@
-package client.GUI;
+package client.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,14 +24,14 @@ public class ConnectFourGUI {
     public static final Color BOARD_COLOR = Color.GRAY;
 
     /**
-     * Construct and display GUI for a Connect Four game.
+     * Construct and display gui for a Connect Four game.
      *
      * @param board The game board
      * @param firstPlayer The color of player who will start.
      * @param depth How far ahead will computer player look?
      */
     public static void showGUI(final Color[][] board, final Color firstPlayer, final int depth) {
-        // For thread safety, invoke GUI code on event-dispatching thread
+        // For thread safety, invoke gui code on event-dispatching thread
         SwingUtilities.invokeLater(() -> {
             ConnectFourGUI gui = new ConnectFourGUI(board, firstPlayer, depth);
             gui.startGame();
@@ -81,7 +81,7 @@ public class ConnectFourGUI {
     /** How many moves ahead will the computer player search? */
     private int depth;
 
-    // GUI components
+    // gui components
     private final JFrame boardFrame;
     private final BoardPanel boardPanel;
     private final JLabel statusLabel;
@@ -126,13 +126,13 @@ public class ConnectFourGUI {
     private void computerTurn() {
         if(currentPlayer == COMPUTER) {
             // Computer player may take a while so use worker thread
-            // to think in the background instead of causing the GUI
+            // to think in the background instead of causing the gui
             // to lock up.
             SwingWorker<Integer, ?> worker = new SwingWorker<Integer, Object>() {
                 @Override
                 public Integer doInBackground() {
                     // Make a copy of board for computer to play with
-                    // so we won't refresh the GUI with the computer's
+                    // so we won't refresh the gui with the computer's
                     // thoughts.
                     Color[][] boardCopy = new Color[ROWS][COLUMNS];
                     for(int i = 0; i < board.length; i++) {
@@ -170,7 +170,7 @@ public class ConnectFourGUI {
         statusLabel.setText("Checking for win...");
 
         // Checking for win may take some time, so use background
-        // thread to keep GUI from locking up.
+        // thread to keep gui from locking up.
         SwingWorker<Color, ?> worker = new SwingWorker<Color, Object>() {
             @Override
             public Color doInBackground() {
@@ -223,7 +223,7 @@ public class ConnectFourGUI {
     }
 
     /**
-     * Constructor for the GUI.
+     * Constructor for the gui.
      */
     private ConnectFourGUI(Color[][] board, Color player, int depth) {
         this.board = board;
