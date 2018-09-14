@@ -24,7 +24,8 @@ public class MainThread {
             // faz nada
         }
 
-        System.out.println("passou");
+        System.out.println("Both players connected");
+        broadcastToClients(new Message("print", "Todos os jogadores se conectaram!"));
         sleep(2000);
 
         sendPlay(room.getActualPlayer());
