@@ -2,6 +2,7 @@ package client;
 
 import java.io.Serializable;
 
+import gamecore.Player;
 import gamecore.Table;
 import system.Message;
 
@@ -54,6 +55,16 @@ public class ClientMessageHandler {
                 } else {
                     System.out.println("YOU LOST!");
                 }
+                break;
+
+            case ("chat"):
+                Player player = (Player) message.getArguments().get(0);
+                String text = (String) message.getArguments().get(1);
+                System.out.println(player.getName()+ ": " + text);
+                break;
+
+            case ("not-your-turn"):
+                System.out.println("Ops, nao eh sua vez de jogar, voce jogou na vez errada.");
         }
     }
 }

@@ -5,12 +5,11 @@ import java.util.Map;
 
 import gamecore.Player;
 import gamecore.Room;
-import server.keepalive.KeepAliveListener;
 import system.Message;
 
 public class MainThread {
     private static Server server;
-    private static KeepAliveListener listener;
+    private static ChatServer listener;
     protected static Room room = new Room();
 
     // map de players por ID
@@ -24,8 +23,7 @@ public class MainThread {
             // faz nada
         }
 
-        System.out.println("Both players connected");
-        broadcastToClients(new Message("print", "Todos os jogadores se conectaram!"));
+        System.out.println("Ambos os jogadores se conectaram");
         sleep(2000);
 
         sendPlay(room.getActualPlayer());
@@ -55,7 +53,7 @@ public class MainThread {
     }
 
     private static void runKeepAliveSocket() {
-        listener = new KeepAliveListener();
+        listener = new ChatServer();
 
         Thread thread = new Thread(listener);
         thread.start();
@@ -76,5 +74,23 @@ public class MainThread {
         } catch(InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Player findPlayerById(int id) {
+        for(Player p : players.keySet()) {
+            if(p.getId() == id) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public static Player findPlayerByClientConnection(ClientConnection c) {
+        for (Map.Entry<Player, ClientConnection> entry : MainThread.players.entrySet()) {
+            if (entry.getValue().equals(c)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }

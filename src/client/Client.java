@@ -1,16 +1,18 @@
 package client;
 
-import java.net.Socket;
-import java.util.Scanner;
-
-import javax.swing.JOptionPane;
-
 import gamecore.Table;
 import system.Connection;
 import system.Message;
+
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.Objects;
+import java.util.Scanner;
+
 import static java.lang.System.in;
 
 public class Client {
+    static ChatClient chat;
     static int id;
     static Scanner scanner = new Scanner(in);
     static Connection connection;
@@ -25,43 +27,86 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        String name = (String) JOptionPane.showInputDialog(
-                "Insira seu nickname:", "player");
+        System.out.println("Insira seu nick [ENTER para 'Player']");
+        String name = scanner.nextLine();
+        if(isBlank(name)) {
+            name = "Player";
+        }
 
-        String serverIP = (String) JOptionPane.showInputDialog(
-                "Insira o IP do servidor", "localhost");
+        System.out.println("Insira o IP do servidor: [ENTER para localhost]");
+        String serverIP = scanner.nextLine();
+        if(isBlank(serverIP)) {
+            serverIP = "localhost";
+        }
 
-        String serverPort = (String) JOptionPane.showInputDialog(
-                "Insira a porta do servidor", "5555");
+        System.out.println("Insira a porta do servidor: [ENTER para 5555]");
+        String port = scanner.nextLine();
+        if(isBlank(port)) {
+            port = "5555";
+        } else if (!isNumeric(port)) {
+            System.out.println("Valor da porta invalido, usando 5555.");
+            port = "5555";
+        }
 
+        connect(serverIP, Integer.valueOf(port));
+        System.out.println("Conectado ao servidor do jogo [TCP]");
 
-        connect(serverIP, Integer.valueOf(serverPort));
-        System.out.println("Connected to server");
+        chat = new ChatClient(serverIP);
+
 
         connection.sendMessage(new Message("login", name));
 
-        startHandler();
+        new Thread(() -> {
+            while (true)
+                try {
+                    ClientMessageHandler.handleMessage(connection.readMessage());
+                } catch (SocketException e) {
+                    System.out.println("O servidor esta offline. Partida encerrada.");
+                    System.exit(0);
+                }
+        }).start();
 
-        KeepAliveSender sender = new KeepAliveSender();
+        ChatClient sender = new ChatClient("localhost");
 
         Thread thread = new Thread(sender);
         thread.start();
 
+        while (true) { // le comando do player
+            handleInput(scanner.nextLine());
+        }
+
     }
 
-    private static void startHandler() {
-        new Thread(() -> {
-            while(true)
-                ClientMessageHandler.handleMessage(connection.readMessage());
-        }).start();
+    private static boolean isBlank(String serverIP) {
+        return serverIP == null || Objects.equals(serverIP, "") || Objects.equals(serverIP, "\n");
+    }
+
+    private static void handleInput(String command) {
+        if (!Objects.equals(command, "") && !Objects.equals(command, "\n")) {
+            if ('/' == command.charAt(0)) { // comecou com / eh msg de chat
+                chat.sendChat(command.substring(1));
+            } else { // deve ser jogada
+                if (isNumeric(command) && (Integer.valueOf(command) - 1) <= 7) { // ve se eh um numero e se cabe nas colunas
+                    int column = Integer.valueOf(command) - 1;
+                    connection.sendMessage(new Message("add", column));
+                } else { // jogada invalida
+                    System.out.println("Comando invalido.");
+                }
+            }
+        }
+    }
+
+    private static boolean isNumeric(String command) {
+        try {
+            Integer.valueOf(command);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public static void play() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Insira uma coluna");
-        int column = sc.nextInt();
-
-        Client.connection.sendMessage(new Message("add", column-1));
+        System.out.println("Sua vez de jogar! Insira uma coluna [1-7]");
     }
 
     public static int getId() {

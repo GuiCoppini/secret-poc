@@ -1,6 +1,10 @@
 package gamecore;
 
-public class Player {
+import com.sun.corba.se.spi.activation.Server;
+
+import java.io.Serializable;
+
+public class Player implements Serializable {
     private static Integer GLOBAL_ID = 0;
     private String name;
     private Integer id;
