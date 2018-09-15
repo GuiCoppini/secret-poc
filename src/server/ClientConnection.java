@@ -1,9 +1,11 @@
 package server;
 
-import sun.applet.Main;
+import gamecore.Player;
 import system.Connection;
+import system.Message;
 
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ClientConnection implements Runnable {
 
@@ -16,9 +18,19 @@ public class ClientConnection implements Runnable {
     @Override
     public void run() {
 
-        while(true)
-            ServerMessageHandler
-                    .handleIncomingMessage(connection.readMessage(), this);
+        while (true) {
+            try {
+                ServerMessageHandler
+                        .handleIncomingMessage(connection.readMessage(), this);
+            } catch (SocketException e) {
+                System.out.println("Um player se desconectou, avisando todo mundo.");
+                Player offlinePlayer = MainThread.findPlayerByClientConnection(this);
+                MainThread.players.remove(offlinePlayer);
+                MainThread.broadcastToClients(new Message("print", "Algum player se desconectou, encerrando server."));
+
+                System.exit(0);
+            }
+        }
     }
 
     public Connection getConnection() {

@@ -75,4 +75,22 @@ public class MainThread {
             e.printStackTrace();
         }
     }
+
+    public static Player findPlayerById(int id) {
+        for(Player p : players.keySet()) {
+            if(p.getId() == id) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public static Player findPlayerByClientConnection(ClientConnection c) {
+        for (Map.Entry<Player, ClientConnection> entry : MainThread.players.entrySet()) {
+            if (entry.getValue().equals(c)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
 }

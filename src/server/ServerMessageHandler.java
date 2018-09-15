@@ -16,11 +16,7 @@ public class ServerMessageHandler {
             case ("add"):
 
                 Player player = null;
-                for (Map.Entry<Player, ClientConnection> entry : MainThread.players.entrySet()) {
-                    if (entry.getValue().equals(c)) {
-                        player = entry.getKey();
-                    }
-                }
+                player = MainThread.findPlayerByClientConnection(c);
 
                 System.out.println("Actual: " + room.getActualPlayer().getId());
 

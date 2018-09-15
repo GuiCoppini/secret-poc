@@ -18,6 +18,7 @@ public class Server implements Runnable {
 
             System.out.println("Escolha a porta do servidor: [ENTER para 5555]");
             String port = sc.nextLine();
+
             if(port != null && !Objects.equals(port, "") && !Objects.equals(port, "\n")) {
                 try {
                     serverSocket = new ServerSocket(Integer.valueOf(port));

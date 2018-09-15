@@ -1,11 +1,14 @@
 package client;
 
-import java.net.Socket;
-import java.util.Scanner;
-
 import gamecore.Table;
 import system.Connection;
 import system.Message;
+
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.Objects;
+import java.util.Scanner;
+
 import static java.lang.System.in;
 
 public class Client {
@@ -24,19 +27,43 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        System.out.println("Insira seu nick");
+        System.out.println("Insira seu nick [ENTER para 'Player']");
         String name = scanner.nextLine();
+        if(isBlank(name)) {
+            name = "Player";
+        }
 
-        connect("localhost", 5555);
-        chat = new ChatClient("localhost");
-        System.out.println("Connected to server");
+        System.out.println("Insira o IP do servidor: [ENTER para localhost]");
+        String serverIP = scanner.nextLine();
+        if(isBlank(serverIP)) {
+            serverIP = "localhost";
+        }
+
+        System.out.println("Insira a porta do servidor: [ENTER para 5555]");
+        String port = scanner.nextLine();
+        if(isBlank(port)) {
+            port = "5555";
+        } else if (!isNumeric(port)) {
+            System.out.println("Valor da porta invalido, usando 5555.");
+            port = "5555";
+        }
+
+        connect(serverIP, Integer.valueOf(port));
+        System.out.println("Conectado ao servidor do jogo [TCP]");
+
+        chat = new ChatClient(serverIP);
 
 
         connection.sendMessage(new Message("login", name));
 
         new Thread(() -> {
-            while(true)
-                ClientMessageHandler.handleMessage(connection.readMessage());
+            while (true)
+                try {
+                    ClientMessageHandler.handleMessage(connection.readMessage());
+                } catch (SocketException e) {
+                    System.out.println("O servidor esta offline. Partida encerrada.");
+                    System.exit(0);
+                }
         }).start();
 
         ChatClient sender = new ChatClient("localhost");
@@ -44,14 +71,22 @@ public class Client {
         Thread thread = new Thread(sender);
         thread.start();
 
-        String command;
-        while(true) {
-            command = scanner.nextLine();
+        while (true) { // le comando do player
+            handleInput(scanner.nextLine());
+        }
 
-            if('/' == command.charAt(0)) { // eh msg de chat
+    }
+
+    private static boolean isBlank(String serverIP) {
+        return serverIP == null || Objects.equals(serverIP, "") || Objects.equals(serverIP, "\n");
+    }
+
+    private static void handleInput(String command) {
+        if (!Objects.equals(command, "") && !Objects.equals(command, "\n")) {
+            if ('/' == command.charAt(0)) { // comecou com / eh msg de chat
                 chat.sendChat(command.substring(1));
             } else { // deve ser jogada
-                if (isValidInput(command)) {
+                if (isNumeric(command) && (Integer.valueOf(command) - 1) <= 7) { // ve se eh um numero e se cabe nas colunas
                     int column = Integer.valueOf(command) - 1;
                     connection.sendMessage(new Message("add", column));
                 } else { // jogada invalida
@@ -59,11 +94,9 @@ public class Client {
                 }
             }
         }
-
     }
 
-    private static boolean isValidInput(String command) {
-        boolean isValid = false;
+    private static boolean isNumeric(String command) {
         try {
             Integer.valueOf(command);
             return true;

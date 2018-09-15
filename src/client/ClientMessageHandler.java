@@ -2,6 +2,7 @@ package client;
 
 import java.io.Serializable;
 
+import gamecore.Player;
 import gamecore.Table;
 import system.Message;
 
@@ -56,7 +57,9 @@ public class ClientMessageHandler {
                 break;
 
             case ("chat"):
-                System.out.println("CHAT: " + message.getArguments().get(0));
+                Player player = (Player) message.getArguments().get(0);
+                String text = (String) message.getArguments().get(1);
+                System.out.println(player.getName()+ ": " + text);
                 break;
 
             case ("not-your-turn"):

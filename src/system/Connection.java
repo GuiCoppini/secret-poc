@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Connection {
     ObjectOutputStream out;
@@ -20,13 +21,15 @@ public class Connection {
         }
     }
 
-    public Message readMessage() {
+    public Message readMessage() throws SocketException {
         Message input;
         try {
             while (true)
                 if ((input = (Message) in.readObject()) != null) {
                     return input;
                 }
+        } catch (SocketException e) {
+            throw new SocketException("Someone went offline.");
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Algo deu errado e quebrou tudo");
