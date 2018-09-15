@@ -23,10 +23,10 @@ public class ServerMessageHandler {
                 }
 
                 System.out.println("Actual: " + room.getActualPlayer().getId());
-                System.out.println("Who played: " + player.getId());
 
                 if(room.getActualPlayer().getId() != player.getId()) {
-                    System.out.println("WRONG TURN PLAY");
+                    System.out.println("Player " + player.getId() + " jogou na vez errada.");
+                    c.getConnection().sendMessage(new Message("not-your-turn"));
                     return;
                 }
 

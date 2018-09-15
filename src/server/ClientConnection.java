@@ -16,8 +16,6 @@ public class ClientConnection implements Runnable {
     @Override
     public void run() {
 
-        System.out.println("Rodando o run");
-
         while(true)
             ServerMessageHandler
                     .handleIncomingMessage(connection.readMessage(), this);

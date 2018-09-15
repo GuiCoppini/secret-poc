@@ -1,11 +1,14 @@
 package server;
 
+import sun.applet.Main;
+import system.Message;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-public class KeepAliveListener implements Runnable {
+public class ChatServer implements Runnable {
     @Override
     public void run() {
         DatagramSocket serverSocket = null;
@@ -17,10 +20,9 @@ public class KeepAliveListener implements Runnable {
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
                 serverSocket.receive(receivePacket);
                 String sentence = new String(receivePacket.getData());
-                InetAddress IPAddress = receivePacket.getAddress();
-                int port = receivePacket.getPort();
-                System.out.println("RECEIVED: " + sentence);
-                System.out.println("FROM IP: "+ IPAddress);
+                System.out.println("CHAT: " + sentence);
+
+                MainThread.broadcastToClients(new Message("chat", sentence));
             }
         } catch(Exception e) {
             e.printStackTrace();

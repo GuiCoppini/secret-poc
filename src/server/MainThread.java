@@ -9,7 +9,7 @@ import system.Message;
 
 public class MainThread {
     private static Server server;
-    private static KeepAliveListener listener;
+    private static ChatServer listener;
     protected static Room room = new Room();
 
     // map de players por ID
@@ -23,7 +23,7 @@ public class MainThread {
             // faz nada
         }
 
-        System.out.println("passou");
+        System.out.println("Ambos os jogadores se conectaram");
         sleep(2000);
 
         sendPlay(room.getActualPlayer());
@@ -53,7 +53,7 @@ public class MainThread {
     }
 
     private static void runKeepAliveSocket() {
-        listener = new KeepAliveListener();
+        listener = new ChatServer();
 
         Thread thread = new Thread(listener);
         thread.start();

@@ -29,7 +29,7 @@ public class Connection {
                 }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Deu pau");
+            throw new RuntimeException("Algo deu errado e quebrou tudo");
         }
     }
 

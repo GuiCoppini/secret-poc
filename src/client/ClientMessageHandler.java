@@ -53,6 +53,14 @@ public class ClientMessageHandler {
                 } else {
                     System.out.println("YOU LOST!");
                 }
+                break;
+
+            case ("chat"):
+                System.out.println("CHAT: " + message.getArguments().get(0));
+                break;
+
+            case ("not-your-turn"):
+                System.out.println("Ops, nao eh sua vez de jogar, voce jogou na vez errada.");
         }
     }
 }
