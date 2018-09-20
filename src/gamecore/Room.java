@@ -9,6 +9,7 @@ public class Room {
     public static final int PLAYERS_SIZE = 2;
     private Table table = new Table();
     private Player[] players = new Player[PLAYERS_SIZE];
+    private ArrayList<Player> watchers = new ArrayList<>();
     private Player winner; // vai ser settado quando alguem ganhar
 
     private int actualPlayerPosition = 0; // posicao do player atual no array
@@ -32,6 +33,10 @@ public class Room {
 
     public Table getTable() {
         return table;
+    }
+
+    public void addWatcher(Player watcher) {
+        watchers.add(watcher);
     }
 
     public void addPlayer(Player joined) {

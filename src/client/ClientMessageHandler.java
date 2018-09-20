@@ -1,9 +1,8 @@
 package client;
 
-import java.io.Serializable;
-
 import gamecore.Player;
 import gamecore.Table;
+import java.io.Serializable;
 import system.Message;
 
 public class ClientMessageHandler {
@@ -11,13 +10,13 @@ public class ClientMessageHandler {
 
     static void handleMessage(Message message) {
 
-        switch(message.getCommand()) {
+        switch (message.getCommand()) {
             case ("you"):
                 Client.setId((int) message.getArguments().get(0));
                 break;
             case ("print"):
                 System.out.println();
-                for(Serializable arg : message.getArguments()) {
+                for (Serializable arg : message.getArguments()) {
                     System.out.println(arg);
                 }
                 break;
@@ -47,20 +46,35 @@ public class ClientMessageHandler {
 
                 break;
 
+            case ("printtable"):
+                for (int i = 0; i < Client.localTable.getTable().length; i++) {
+                    for (int j = 0; j < Client.localTable.getTable()[i].length; j++) {
+                        System.out.print(Client.localTable.getTable()[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+
+                break;
+
             case ("winner"):
                 int winnerId = (int) message.getArguments().get(0);
 
-                if(Client.getId() == winnerId) {
+                if (Client.getId() == winnerId) {
                     System.out.println("YOU WON!");
                 } else {
                     System.out.println("YOU LOST!");
                 }
                 break;
 
+            case ("someonewon"):
+                String winnerName = (String) message.getArguments().get(0);
+                System.out.println(winnerName + " won");
+                break;
+
             case ("chat"):
                 Player player = (Player) message.getArguments().get(0);
                 String text = (String) message.getArguments().get(1);
-                System.out.println(player.getName()+ ": " + text);
+                System.out.println(player.getName() + ": " + text);
                 break;
 
             case ("not-your-turn"):

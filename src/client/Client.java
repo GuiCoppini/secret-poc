@@ -53,8 +53,13 @@ public class Client {
 
         chat = new ChatClient(serverIP);
 
-
-        connection.sendMessage(new Message("login", name));
+        System.out.println("Digite start para jogar ou watch para assistir");
+        String command = scanner.nextLine();
+        if (command.equals("start")) {
+            connection.sendMessage(new Message("login", name));
+        } else if (command.equals("watch")) {
+            connection.sendMessage(new Message("watch", name));
+        }
 
         new Thread(() -> {
             while (true)

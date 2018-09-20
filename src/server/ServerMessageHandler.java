@@ -1,11 +1,9 @@
 package server;
 
-import java.util.Map;
+import java.util.Arrays;
 
-import client.Client;
 import gamecore.Player;
 import gamecore.Room;
-import sun.applet.Main;
 import system.Message;
 
 public class ServerMessageHandler {
@@ -34,12 +32,14 @@ public class ServerMessageHandler {
                 room.changePlayer(); // troca vez
 
                 MainThread.broadcastToClients(new Message("update", column, player.getId()));
+                MainThread.broadcastToWatchers(new Message("update", column, player.getId()));
 
                 int winnerId = room.verificaVencedor(room.getPlayers()[0].getId(), room.getPlayers()[1].getId());
                 System.out.println("WINNER ID = " + winnerId);
                 if(winnerId != 0) {
                     Message winnerMessage = new Message("winner", winnerId);
                     MainThread.broadcastToClients(winnerMessage);
+                    MainThread.broadcastToWatchers(new Message("someonewon", Arrays.stream(room.getPlayers()).filter(p -> p.getId().equals(winnerId)).findFirst().get().getName()));
                 } else {
                     MainThread.sendPlay(room.getActualPlayer());
                 }
@@ -55,6 +55,16 @@ public class ServerMessageHandler {
 
                 c.getConnection().sendMessage(new Message("you", joined.getId()));
                 c.getConnection().sendMessage(new Message("table", room.getTable()));
+                break;
+            case ("watch"):
+                String watcherNickname = (String) message.getArguments().get(0);
+                Player watcherJoined = new Player(watcherNickname);
+                MainThread.watchers.put(watcherJoined, c);
+                room.addWatcher(watcherJoined);
+
+                MainThread.broadcastToClients(new Message("print",watcherNickname + " is watching."));
+                c.getConnection().sendMessage(new Message("table", room.getTable()));
+                c.getConnection().sendMessage(new Message("printtable"));
         }
     }
 }
