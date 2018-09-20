@@ -1,5 +1,6 @@
 package system;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -28,7 +29,7 @@ public class Connection {
                 if ((input = (Message) in.readObject()) != null) {
                     return input;
                 }
-        } catch (SocketException e) {
+        } catch (EOFException | SocketException e) {
             throw new SocketException("Someone went offline.");
         } catch (Exception e) {
             e.printStackTrace();

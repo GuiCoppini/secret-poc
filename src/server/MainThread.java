@@ -1,9 +1,10 @@
 package server;
 
-import gamecore.Player;
-import gamecore.Room;
 import java.util.HashMap;
 import java.util.Map;
+
+import gamecore.Player;
+import gamecore.Room;
 import system.Message;
 
 public class MainThread {
@@ -90,6 +91,15 @@ public class MainThread {
         for (Player p : players.keySet()) {
             if (p.getId() == id) {
                 return p;
+            }
+        }
+        return null;
+    }
+
+    public static Player findWatcherById(int id) {
+        for (Player w : watchers.keySet()) {
+            if (w.getId() == id) {
+                return w;
             }
         }
         return null;

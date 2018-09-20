@@ -1,10 +1,10 @@
 package server;
 
-import gamecore.Player;
-import sun.applet.Main;
-import system.Message;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 
-import java.net.*;
+import gamecore.Player;
+import system.Message;
 
 public class ChatServer implements Runnable {
     @Override
@@ -25,8 +25,14 @@ public class ChatServer implements Runnable {
                 int id = Integer.valueOf(sentence.charAt(0) + ""); // sim, tem q fazer isso
                 Player playerWhoSent = MainThread.findPlayerById(id);
 
+                if (playerWhoSent == null) {
+                    // eh watcher
+                    System.out.println("Spectator mandou msg mas nem devia");
+                    return;
+                }
                 System.out.println(playerWhoSent.getName() + ": " + sentence.substring(1));
                 MainThread.broadcastToClients(new Message("chat", playerWhoSent, sentence.substring(1)));
+                MainThread.broadcastToWatchers(new Message("chat", playerWhoSent, sentence.substring(1)));
             }
         } catch(Exception e) {
             e.printStackTrace();

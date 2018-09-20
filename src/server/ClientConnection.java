@@ -1,11 +1,11 @@
 package server;
 
+import java.net.Socket;
+import java.net.SocketException;
+
 import gamecore.Player;
 import system.Connection;
 import system.Message;
-
-import java.net.Socket;
-import java.net.SocketException;
 
 public class ClientConnection implements Runnable {
 
@@ -18,11 +18,16 @@ public class ClientConnection implements Runnable {
     @Override
     public void run() {
 
-        while (true) {
+        while(true) {
             try {
-                ServerMessageHandler
-                        .handleIncomingMessage(connection.readMessage(), this);
-            } catch (SocketException e) {
+                ServerMessageHandler.handleIncomingMessage(connection.readMessage(), this);
+            } catch(SocketException e) {
+                if(MainThread.findPlayerByClientConnection(this) == null) {
+                    // eh um watcher
+                    return;
+
+                }
+
                 System.out.println("Um player se desconectou, avisando todo mundo.");
                 Player offlinePlayer = MainThread.findPlayerByClientConnection(this);
                 MainThread.players.remove(offlinePlayer);
