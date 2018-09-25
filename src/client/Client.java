@@ -1,13 +1,13 @@
 package client;
 
 import gamecore.Table;
-import system.Connection;
-import system.Message;
-
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Objects;
 import java.util.Scanner;
+import javax.swing.*;
+import system.Connection;
+import system.Message;
 
 import static java.lang.System.in;
 
@@ -27,39 +27,38 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        System.out.println("Insira seu nick [ENTER para 'Player']");
-        String name = scanner.nextLine();
-        if(isBlank(name)) {
-            name = "Player";
-        }
 
-        System.out.println("Insira o IP do servidor: [ENTER para localhost]");
-        String serverIP = scanner.nextLine();
-        if(isBlank(serverIP)) {
-            serverIP = "localhost";
-        }
 
-        System.out.println("Insira a porta do servidor: [ENTER para 5555]");
-        String port = scanner.nextLine();
-        if(isBlank(port)) {
-            port = "5555";
-        } else if (!isNumeric(port)) {
-            System.out.println("Valor da porta invalido, usando 5555.");
-            port = "5555";
-        }
+        JPanel painel = new JPanel();
 
-        connect(serverIP, Integer.valueOf(port));
+        JTextField playerNameField = new JTextField("Player", 10);
+        painel.add(playerNameField);
+
+        JTextField ipField = new JTextField("localhost", 10);
+        painel.add(ipField);
+
+        JTextField portField = new JTextField("5555", 4);
+        painel.add(portField);
+
+        JButton botaoIniciar = new JButton("Iniciar jogo");
+        botaoIniciar.addActionListener(e -> connection.sendMessage(new Message("login", playerNameField.getText())));
+        painel.add(botaoIniciar);
+
+        JButton botaoAssistir = new JButton("Assistir jogo");
+        botaoAssistir.addActionListener(e -> connection.sendMessage(new Message("watch", playerNameField.getText())));
+        painel.add(botaoAssistir);
+
+        JFrame janela = new JFrame("Tela Inicial");
+        janela.add(painel);
+
+        janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        janela.pack();
+        janela.setVisible(true);
+
+        connect(ipField.getText(), Integer.valueOf(portField.getText()));
         System.out.println("Conectado ao servidor do jogo [TCP]");
 
-        chat = new ChatClient(serverIP);
-
-        System.out.println("Digite start para jogar ou watch para assistir");
-        String command = scanner.nextLine();
-        if (command.equals("start")) {
-            connection.sendMessage(new Message("login", name));
-        } else if (command.equals("watch")) {
-            connection.sendMessage(new Message("watch", name));
-        }
+        chat = new ChatClient(ipField.getText());
 
         new Thread(() -> {
             while (true)
