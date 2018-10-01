@@ -6,7 +6,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 public class ChatClient implements Runnable {
-    private String serverIP = "localhost";
+    private String serverIP;
 
     public ChatClient(String serverIP) {
         this.serverIP = serverIP;
@@ -18,8 +18,8 @@ public class ChatClient implements Runnable {
     }
 
     public void sendChat(String message) {
-        String messageWithId = Client.getId()+message;
-        DatagramSocket clientSocket = null;
+        String messageWithId = Client.getId()+","+message;
+        DatagramSocket clientSocket;
         try {
             clientSocket = new DatagramSocket();
 
