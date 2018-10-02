@@ -13,6 +13,7 @@ public class ClientMessageHandler {
         switch (message.getCommand()) {
             case ("you"):
                 Client.setId((int) message.getArguments().get(0));
+                Client.closeInitialFrame();
                 break;
             case ("print"):
                 System.out.println();

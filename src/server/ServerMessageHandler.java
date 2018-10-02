@@ -1,16 +1,15 @@
 package server;
 
-import java.util.Arrays;
-
 import gamecore.Player;
 import gamecore.Room;
+import java.util.Arrays;
 import system.Message;
 
 public class ServerMessageHandler {
 
     static void handleIncomingMessage(Message message, ClientConnection c) {
         Room room = MainThread.room;
-        switch(message.getCommand()) {
+        switch (message.getCommand()) {
             case ("add"):
 
                 Player player = null;
@@ -18,14 +17,14 @@ public class ServerMessageHandler {
 
                 System.out.println("Actual: " + room.getActualPlayer().getId());
 
-                if(room.getActualPlayer().getId() != player.getId()) {
+                if (room.getActualPlayer().getId() != player.getId()) {
                     System.out.println("Player " + player.getId() + " jogou na vez errada.");
                     c.getConnection().sendMessage(new Message("not-your-turn"));
                     return;
                 }
 
                 int column = (int) message.getArguments().get(0);
-                System.out.println("(" + player.getName() + ")" +  " Column = " + column);
+                System.out.println("(" + player.getName() + ")" + " Column = " + column);
                 System.out.println("By player " + player.getName());
                 room.getTable().add(column, player.getId());
 
@@ -36,7 +35,7 @@ public class ServerMessageHandler {
 
                 int winnerId = room.verificaVencedor(room.getPlayers()[0].getId(), room.getPlayers()[1].getId());
                 System.out.println("WINNER ID = " + winnerId);
-                if(winnerId != 0) {
+                if (winnerId != 0) {
                     Message winnerMessage = new Message("winner", winnerId);
                     MainThread.broadcastToClients(winnerMessage);
                     MainThread.broadcastToWatchers(new Message("someonewon", Arrays.stream(room.getPlayers()).filter(p -> p.getId().equals(winnerId)).findFirst().get().getName()));
@@ -51,7 +50,7 @@ public class ServerMessageHandler {
                 MainThread.players.put(joined, c);
                 room.addPlayer(joined);
 
-                MainThread.broadcastToClients(new Message("print","Player " + nickname + " joined."));
+                MainThread.broadcastToClients(new Message("print", "Player " + nickname + " joined."));
 
                 c.getConnection().sendMessage(new Message("you", joined.getId()));
                 c.getConnection().sendMessage(new Message("table", room.getTable()));
@@ -62,7 +61,8 @@ public class ServerMessageHandler {
                 MainThread.watchers.put(watcherJoined, c);
                 room.addWatcher(watcherJoined);
 
-                MainThread.broadcastToClients(new Message("print",watcherNickname + " is watching."));
+                MainThread.broadcastToClients(new Message("print", watcherNickname + " is watching."));
+                c.getConnection().sendMessage(new Message("you", watcherJoined.getId()));
                 c.getConnection().sendMessage(new Message("table", room.getTable()));
                 c.getConnection().sendMessage(new Message("printtable"));
         }

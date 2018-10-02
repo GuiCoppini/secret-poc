@@ -1,6 +1,7 @@
 package client;
 
 import gamecore.Table;
+import java.awt.event.WindowEvent;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Objects;
@@ -17,6 +18,7 @@ public class Client {
     static Scanner scanner = new Scanner(in);
     static Connection connection;
     static Table localTable = new Table();
+    static JFrame telaInicial;
 
     private static void connect(String ip, int port) {
         try {
@@ -41,24 +43,33 @@ public class Client {
         painel.add(portField);
 
         JButton botaoIniciar = new JButton("Iniciar jogo");
-        botaoIniciar.addActionListener(e -> connection.sendMessage(new Message("login", playerNameField.getText())));
+        botaoIniciar.addActionListener(e -> {
+            connection.sendMessage(new Message("login", playerNameField.getText()));
+            JOptionPane.showMessageDialog(null, "Aguardando oponente", "Connect4", JOptionPane.INFORMATION_MESSAGE);
+        });
         painel.add(botaoIniciar);
 
         JButton botaoAssistir = new JButton("Assistir jogo");
-        botaoAssistir.addActionListener(e -> connection.sendMessage(new Message("watch", playerNameField.getText())));
+        botaoAssistir.addActionListener(e -> {
+            connection.sendMessage(new Message("watch", playerNameField.getText()));
+            JOptionPane.showMessageDialog(null, "Tentando encontrar jogo", "Connect4", JOptionPane.INFORMATION_MESSAGE);
+        });
         painel.add(botaoAssistir);
 
         JFrame janela = new JFrame("Tela Inicial");
         janela.add(painel);
 
-        janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        janela.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         janela.pack();
         janela.setVisible(true);
+
+        telaInicial = janela;
 
         connect(ipField.getText(), Integer.valueOf(portField.getText()));
         System.out.println("Conectado ao servidor do jogo [TCP]");
 
         chat = new ChatClient(ipField.getText());
+        chat.runChat(playerNameField.getText());
 
         new Thread(() -> {
             while (true)
@@ -79,10 +90,6 @@ public class Client {
             handleInput(scanner.nextLine());
         }
 
-    }
-
-    private static boolean isBlank(String serverIP) {
-        return serverIP == null || Objects.equals(serverIP, "") || Objects.equals(serverIP, "\n");
     }
 
     private static void handleInput(String command) {
@@ -119,5 +126,10 @@ public class Client {
 
     public static void setId(int id) {
         Client.id = id;
+    }
+
+    public static void closeInitialFrame() {
+        telaInicial.dispatchEvent(new WindowEvent(telaInicial, WindowEvent.WINDOW_CLOSING));
+
     }
 }
