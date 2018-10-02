@@ -22,7 +22,9 @@ public class ChatServer implements Runnable {
 
                 // primeiro char eh o ID do player q enviou
 
-                int id = Integer.valueOf(sentence.charAt(0) + ""); // sim, tem q fazer isso
+                String[] splittedMessage = sentence.split(",", 2);
+                String idString = splittedMessage[0];
+                int id = Integer.valueOf(idString);
                 Player playerWhoSent = MainThread.findPlayerById(id);
 
                 if (playerWhoSent == null) {
@@ -30,9 +32,9 @@ public class ChatServer implements Runnable {
                     System.out.println("Spectator mandou msg mas nem devia");
                     return;
                 }
-                System.out.println(playerWhoSent.getName() + ": " + sentence.substring(1));
-                MainThread.broadcastToClients(new Message("chat", playerWhoSent, sentence.substring(1)));
-                MainThread.broadcastToWatchers(new Message("chat", playerWhoSent, sentence.substring(1)));
+                System.out.println(playerWhoSent.getName() + ": " + splittedMessage[1]);
+                MainThread.broadcastToClients(new Message("chat", playerWhoSent, splittedMessage[1]));
+                MainThread.broadcastToWatchers(new Message("chat", playerWhoSent, splittedMessage[1]));
             }
         } catch(Exception e) {
             e.printStackTrace();

@@ -20,7 +20,7 @@ public class MainThread {
 
     public static void main(String[] args) {
         runServerSocket();
-        runKeepAliveSocket();
+        runChatSocket();
 
         while (checkLength(room.getPlayers()) < 2) {
             // faz nada
@@ -55,7 +55,7 @@ public class MainThread {
         thread.start();
     }
 
-    private static void runKeepAliveSocket() {
+    private static void runChatSocket() {
         listener = new ChatServer();
 
         Thread thread = new Thread(listener);

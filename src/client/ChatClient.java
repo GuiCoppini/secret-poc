@@ -1,8 +1,6 @@
 package client;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -10,7 +8,7 @@ import java.net.SocketException;
 import javax.swing.*;
 
 public class ChatClient implements Runnable {
-    private String serverIP = "localhost";
+    private String serverIP;
 
     static JFrame newFrame = new JFrame();
     static JButton sendMessage;
@@ -28,8 +26,8 @@ public class ChatClient implements Runnable {
     }
 
     public void sendChat(String message) {
-        String messageWithId = Client.getId() + message;
-        DatagramSocket clientSocket = null;
+        String messageWithId = Client.getId()+","+message;
+        DatagramSocket clientSocket;
         try {
             clientSocket = new DatagramSocket();
 
