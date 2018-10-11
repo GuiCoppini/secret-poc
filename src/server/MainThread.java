@@ -79,6 +79,10 @@ public class MainThread {
         }
     }
 
+    public static void sendMessageTo(Player player, Message message) {
+        players.get(player).getConnection().sendMessage(message);
+    }
+
     private static void sleep(int millis) {
         try {
             Thread.sleep(millis);

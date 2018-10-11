@@ -19,6 +19,9 @@ public class Client {
     static Connection connection;
     static Table localTable = new Table();
     static JFrame telaInicial;
+    private static boolean watching;
+    private static Interface anInterface;
+    private static Integer jogador;
 
     private static void connect(String ip, int port) {
         try {
@@ -29,8 +32,6 @@ public class Client {
     }
 
     public static void main(String[] args) {
-
-
         JPanel painel = new JPanel();
 
         JTextField playerNameField = new JTextField("Player", 10);
@@ -42,17 +43,23 @@ public class Client {
         JTextField portField = new JTextField("5555", 4);
         painel.add(portField);
 
+        connect(ipField.getText(), Integer.valueOf(portField.getText()));
+        System.out.println("Conectado ao servidor do jogo [TCP]");
+
         JButton botaoIniciar = new JButton("Iniciar jogo");
         botaoIniciar.addActionListener(e -> {
             connection.sendMessage(new Message("login", playerNameField.getText()));
             JOptionPane.showMessageDialog(null, "Aguardando oponente", "Connect4", JOptionPane.INFORMATION_MESSAGE);
+            anInterface = new Interface(false, connection);
+            chat(ipField, playerNameField, anInterface);
         });
         painel.add(botaoIniciar);
 
         JButton botaoAssistir = new JButton("Assistir jogo");
         botaoAssistir.addActionListener(e -> {
             connection.sendMessage(new Message("watch", playerNameField.getText()));
-            JOptionPane.showMessageDialog(null, "Tentando encontrar jogo", "Connect4", JOptionPane.INFORMATION_MESSAGE);
+            anInterface = new Interface(false, connection);
+            chat(ipField, playerNameField, anInterface);
         });
         painel.add(botaoAssistir);
 
@@ -64,17 +71,16 @@ public class Client {
         janela.setVisible(true);
 
         telaInicial = janela;
+    }
 
-        connect(ipField.getText(), Integer.valueOf(portField.getText()));
-        System.out.println("Conectado ao servidor do jogo [TCP]");
-
+    private static void chat(JTextField ipField, JTextField playerNameField, Interface anInterface) {
         chat = new ChatClient(ipField.getText());
         chat.runChat(playerNameField.getText());
 
         new Thread(() -> {
             while (true)
                 try {
-                    ClientMessageHandler.handleMessage(connection.readMessage());
+                    ClientMessageHandler.handleMessage(connection.readMessage(), chat, anInterface);
                 } catch (SocketException e) {
                     System.out.println("O servidor esta offline. Partida encerrada.");
                     System.exit(0);
@@ -85,26 +91,6 @@ public class Client {
 
         Thread thread = new Thread(sender);
         thread.start();
-
-        while (true) { // le comando do player
-            handleInput(scanner.nextLine());
-        }
-
-    }
-
-    private static void handleInput(String command) {
-        if (!Objects.equals(command, "") && !Objects.equals(command, "\n")) {
-            if ('/' == command.charAt(0)) { // comecou com / eh msg de chat
-                chat.sendChat(command.substring(1));
-            } else { // deve ser jogada
-                if (isNumeric(command) && (Integer.valueOf(command) - 1) <= 7) { // ve se eh um numero e se cabe nas colunas
-                    int column = Integer.valueOf(command) - 1;
-                    connection.sendMessage(new Message("add", column));
-                } else { // jogada invalida
-                    System.out.println("Comando invalido.");
-                }
-            }
-        }
     }
 
     private static boolean isNumeric(String command) {
@@ -114,10 +100,6 @@ public class Client {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    public static void play() {
-        System.out.println("Sua vez de jogar! Insira uma coluna [1-7]");
     }
 
     public static int getId() {
@@ -131,5 +113,17 @@ public class Client {
     public static void closeInitialFrame() {
         telaInicial.dispatchEvent(new WindowEvent(telaInicial, WindowEvent.WINDOW_CLOSING));
 
+    }
+
+    public static void setWatching(boolean w) {
+        watching = w;
+    }
+
+    public static Integer getJogador() {
+        return jogador;
+    }
+
+    public static void setJogador(int j) {
+        jogador = j;
     }
 }

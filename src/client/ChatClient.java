@@ -8,7 +8,7 @@ import java.net.SocketException;
 import javax.swing.*;
 
 public class ChatClient implements Runnable {
-    private String serverIP;
+    private static String serverIP;
 
     static JFrame newFrame = new JFrame();
     static JButton sendMessage;
@@ -25,7 +25,7 @@ public class ChatClient implements Runnable {
 
     }
 
-    public void sendChat(String message) {
+    public static void sendChat(String message) {
         String messageWithId = Client.getId()+","+message;
         DatagramSocket clientSocket;
         try {
@@ -63,8 +63,7 @@ public class ChatClient implements Runnable {
                 chatBox.setText("Cleared all messages\n");
                 messageBox.setText("");
             } else {
-                chatBox.append("<" + username + ">:  " + messageBox.getText()
-                        + "\n");
+                sendChat(messageBox.getText());
                 messageBox.setText("");
             }
             messageBox.requestFocusInWindow();
@@ -112,6 +111,10 @@ public class ChatClient implements Runnable {
 
     }
 
+    public static void sendMessage(String userName, String message) {
+        chatBox.append("<" + userName + ">:  " + message
+                + "\n");
+    }
 
 }
 

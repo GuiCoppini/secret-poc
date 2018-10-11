@@ -32,6 +32,8 @@ public class ServerMessageHandler {
 
                 MainThread.broadcastToClients(new Message("update", column, player.getId()));
                 MainThread.broadcastToWatchers(new Message("update", column, player.getId()));
+                MainThread.sendMessageTo(room.getActualPlayer(), new Message("placeDisk", column, player.getId()));
+                MainThread.broadcastToWatchers(new Message("placeDisk", column, player.getId()));
 
                 int winnerId = room.verificaVencedor(room.getPlayers()[0].getId(), room.getPlayers()[1].getId());
                 System.out.println("WINNER ID = " + winnerId);
@@ -43,6 +45,7 @@ public class ServerMessageHandler {
                     MainThread.sendPlay(room.getActualPlayer());
                 }
 
+
                 break;
             case ("login"):
                 String nickname = (String) message.getArguments().get(0);
@@ -50,10 +53,16 @@ public class ServerMessageHandler {
                 MainThread.players.put(joined, c);
                 room.addPlayer(joined);
 
-                MainThread.broadcastToClients(new Message("print", "Player " + nickname + " joined."));
-
                 c.getConnection().sendMessage(new Message("you", joined.getId()));
+                c.getConnection().sendMessage(new Message("player", room.getPlayers()[1] != null ? 2 : 1));
                 c.getConnection().sendMessage(new Message("table", room.getTable()));
+
+                if (room.getPlayers()[1] != null) {
+                    MainThread.broadcastToClients(new Message("gameStarted"));
+                    MainThread.broadcastToWatchers(new Message("table", room.getTable()));
+                    MainThread.broadcastToWatchers(new Message("printtable"));
+                }
+
                 break;
             case ("watch"):
                 String watcherNickname = (String) message.getArguments().get(0);
@@ -63,8 +72,14 @@ public class ServerMessageHandler {
 
                 MainThread.broadcastToClients(new Message("print", watcherNickname + " is watching."));
                 c.getConnection().sendMessage(new Message("you", watcherJoined.getId()));
-                c.getConnection().sendMessage(new Message("table", room.getTable()));
-                c.getConnection().sendMessage(new Message("printtable"));
+                if (room.getPlayers()[1] != null) {
+                    c.getConnection().sendMessage(new Message("table", room.getTable()));
+                    Player redPlayer = Arrays.stream(room.getPlayers()).filter(player1 -> player1.getId() == 1).findFirst().get();
+                    Player yellowPlayer = Arrays.stream(room.getPlayers()).filter(player1 -> player1.getId() == 2).findFirst().get();
+                    c.getConnection().sendMessage(new Message("printtable", redPlayer, yellowPlayer));
+                } else {
+                    c.getConnection().sendMessage(new Message("print", "Aguardando jogo"));
+                }
         }
     }
 }

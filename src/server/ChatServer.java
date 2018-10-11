@@ -26,15 +26,23 @@ public class ChatServer implements Runnable {
                 String idString = splittedMessage[0];
                 int id = Integer.valueOf(idString);
                 Player playerWhoSent = MainThread.findPlayerById(id);
+                Player watcherWhoSent = MainThread.findWatcherById(id);
 
-                if (playerWhoSent == null) {
+                if (playerWhoSent == null && watcherWhoSent == null) {
                     // eh watcher
-                    System.out.println("Spectator mandou msg mas nem devia");
+                    System.out.println("Desconhecido mandou msg");
                     return;
                 }
-                System.out.println(playerWhoSent.getName() + ": " + splittedMessage[1]);
-                MainThread.broadcastToClients(new Message("chat", playerWhoSent, splittedMessage[1]));
-                MainThread.broadcastToWatchers(new Message("chat", playerWhoSent, splittedMessage[1]));
+
+                if (playerWhoSent != null) {
+                    System.out.println(playerWhoSent.getName() + ": " + splittedMessage[1]);
+                    MainThread.broadcastToClients(new Message("chat", playerWhoSent, splittedMessage[1]));
+                    MainThread.broadcastToWatchers(new Message("chat", playerWhoSent, splittedMessage[1]));
+                } else {
+                    System.out.println(watcherWhoSent.getName() + ": " + splittedMessage[1]);
+                    MainThread.broadcastToClients(new Message("chat", watcherWhoSent, splittedMessage[1]));
+                    MainThread.broadcastToWatchers(new Message("chat", watcherWhoSent, splittedMessage[1]));
+                }
             }
         } catch(Exception e) {
             e.printStackTrace();

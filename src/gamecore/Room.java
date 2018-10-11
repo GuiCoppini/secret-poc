@@ -1,9 +1,6 @@
 package gamecore;
 
-import system.Message;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class Room {
     public static final int PLAYERS_SIZE = 2;
